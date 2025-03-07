@@ -1,0 +1,85 @@
+KPI profit YOY = 
+// THIS FUNCTION FINDS LAST YEAR AND CURRENT YEAR DIFF REVENUE PERCENTAGE 
+VAR LastYearRevenue = CALCULATE([total profit], SAMEPERIODLASTYEAR(date_table[Date]))
+VAR CurrentYearRevenue = CALCULATE([total profit], DATESYTD(date_table[Date]))
+VAR diff = CurrentYearRevenue - LastYearRevenue
+VAR diff_ratio = DIVIDE(diff,LastYearRevenue,0)
+VAR abs_diff = ABS(diff_ratio)
+VAR ResultText = IF(ISBLANK(LastYearRevenue), "No sale last year",
+                                            IF(diff_ratio > 0, FORMAT(abs_diff, "0.0%") &  " more than last year" & "(▲)",
+                                                FORMAT(abs_diff,"0.0%") &  " less than last year" & "(▼)"
+                                            )
+)
+
+RETURN
+    ResultText
+
+------------------------------------------------------------------------
+
+KPI qty YOY = 
+// THIS FUNCTION FINDS LAST YEAR AND CURRENT YEAR DIFF REVENUE PERCENTAGE 
+VAR LastYearQty = CALCULATE([total quantity], SAMEPERIODLASTYEAR(date_table[Date]))
+VAR CurrentYearQty = CALCULATE([total quantity], DATESYTD(date_table[Date]))
+VAR diff = CurrentYearQty - LastYearQty
+
+VAR abs_diff = ABS(diff)/1000
+VAR ResultText = IF(ISBLANK(LastYearQty), "No sale last year",
+                                            IF(diff > 0, FORMAT(abs_diff, "0.0")&"K" &  " more than last year" & "(▲)",
+                                                FORMAT(abs_diff,"0.0")&"K"  &  " less than last year" & "(▼)"
+                                            )
+)
+
+RETURN
+    ResultText
+---------------------------------------------------------------------------
+
+KPI revenue YOY = 
+// THIS FUNCTION FINDS LAST YEAR AND CURRENT YEAR DIFF REVENUE PERCENTAGE 
+VAR LastYearRevenue = CALCULATE([total revenue], SAMEPERIODLASTYEAR(date_table[Date]))
+VAR CurrentYearRevenue = CALCULATE([total revenue], DATESYTD(date_table[Date]))
+VAR diff = CurrentYearRevenue - LastYearRevenue
+VAR diff_ratio = DIVIDE(diff,LastYearRevenue,0)
+VAR abs_diff = ABS(diff_ratio)
+VAR ResultText = IF(ISBLANK(LastYearRevenue), "No sale last year",
+                                            IF(diff_ratio > 0, FORMAT(abs_diff, "0.0%") &  " more than last year" & "(▲)",
+                                                FORMAT(abs_diff,"0.0%") &  " less than last year" & "(▼)"
+                                            )
+)
+
+RETURN
+    ResultText
+----------------------------------------------------------------------------------
+revenue target = 
+VAR LastYearSale=
+                CALCULATE([total revenue], SAMEPERIODLASTYEAR(date_table[Date]))
+return
+        IF(ISBLANK(LastYearSale),70000,
+                                        LastYearSale * 1.5
+                                        )
+
+---------------------------------------------------------------------
+target orders = 
+VAR LastYearOrder=
+                CALCULATE([total orders], SAMEPERIODLASTYEAR(date_table[Date]))
+return
+        IF(ISBLANK(LastYearOrder),15000,
+                                        LastYearOrder * 1.5
+                                        )
+
+-----------------------------------------------------------------------------
+total orders = 
+DISTINCTCOUNT(sales[order_id])
+----------------------------------------------------------------------------------
+total profit = 
+ // this function gets total profit bsaed on sales profit column
+ SUM(sales[profit])
+-----------------------------------------------------------------------------------------
+total quantity = 
+ SUM(sales[qty])
+------------------------------------------------------------------------------------------
+total revenue = 
+ SUM(sales[net sale])
+---------------------------------------------------------------------------------------------
+measures_table = 
+
+ GENERATESERIES(-1,1,1)
